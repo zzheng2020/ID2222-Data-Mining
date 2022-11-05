@@ -10,10 +10,15 @@ in the form of an ordered set of its hashed k-shingles.
 """
 class Shingling():
     def __init__(self) -> None:
+        self._max_hashvalue = (1 << 32) - 1
         return None
 
     def shingling_hash(self, shingling: str):
-        return hash(shingling)
+        hash_value = hash(shingling)
+        if hash_value < 0:
+            return (self._max_hashvalue + hash_value) % self._max_hashvalue
+        else:
+            return hash_value % self._max_hashvalue
 
     def shingling(self, docs: str, k=9):
         docs_len = len(docs)
