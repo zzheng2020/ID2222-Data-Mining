@@ -19,8 +19,8 @@ def join_step(items: List[tuple]):
     """
     generate k frequent set from k - 1 frequent set
 
-    :param items: [(1, 3), (2, 3), (2, 5), (3, 5)]
-    :return: [(2, 3, 5)]
+    :param: items: [(1, 3), (2, 3), (2, 4), (2, 5), (3, 5)]
+    :return: [(2, 3, 4), (2, 3, 5), (2, 4, 5)]]
     """
     i = 0
     items_len = len(items)
@@ -49,17 +49,17 @@ def join_step(items: List[tuple]):
     return join_step_res
 
 
-def prune_step(original_items, gen_items):
+def prune_step(original_items, join_step_items):
     """
-    delete all itemset c in C_{k} such that some (k-1)-subset of c is not in L_{k-1}
+    delete all itemset c in C_{k} such that some (k-1)-subset of c is NOT in L_{k-1}
 
-    :param original_items:
-    :param gen_items:
-    :return:
+    :param: original_items: [(1, 3), (2, 3), (2, 4), (2, 5), (3, 5)]
+    :param: join_step_items: [(2, 3, 4), (2, 3, 5), (2, 4, 5)]
+    :return: [(2, 3, 5)]
     """
     original_items = set(original_items)
     true_join_res = []
-    for gen_item in gen_items:
+    for gen_item in join_step_items:
         existed = True
 
         for i in range(len(gen_item) - 1 - 1):
@@ -73,9 +73,12 @@ def prune_step(original_items, gen_items):
     return true_join_res
 
 
+def gen_possible_itemset(items: List[tuple]):
+    join_step_items = join_step(items)
+    pruned_items = prune_step(original_items=items, join_step_items=join_step_items)
+    return pruned_items
+
+
 if __name__ == '__main__':
-    test = [(1, 3), (2, 3), (2, 5), (3, 5)]
-    tmp = join_step(test)
-    print(tmp)
-    res = prune_step(test, tmp)
-    print(res)
+    test = [('1',), ('2',), ('3',), ('4',), ('5',), ('6',)]
+    print(gen_possible_itemset(test))
