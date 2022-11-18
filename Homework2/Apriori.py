@@ -98,9 +98,6 @@ class APriori:
         for items in itertools.combinations(frequent_items, 1):
             rhs_set = set(items)
             lhs_set = set(lhs_tuples) - rhs_set
-
-            rhs_support = self.get_support(tuple(rhs_set))
-            lhs_rhs_union_support = self.get_support(tuple(lhs_set.union(rhs_set)))
             
             _, _, rhs_support = self.items_index(tuple(rhs_set))
             _, _, lhs_rhs_union_support = self.items_index(tuple(lhs_set.union(rhs_set)))
