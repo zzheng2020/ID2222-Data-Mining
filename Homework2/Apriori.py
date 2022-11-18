@@ -42,7 +42,7 @@ class APriori:
 
         # frequent set 中的元素必须每个都满足要求
         if support < self.min_support:
-            return False, None
+            return False, None, support
 
         while itemset:
             item = itemset.pop()
@@ -51,9 +51,9 @@ class APriori:
             index = index.intersection(self.item2line_index[item])
             support = len(index) / self.total_line
             if support < self.min_support:
-                return False, None
+                return False, None, support
 
-        return True, index
+        return True, index, support
 
     def gen_rules(self, frequent_items: tuple):
         """
@@ -98,10 +98,13 @@ class APriori:
         for items in itertools.combinations(frequent_items, 1):
             rhs_set = set(items)
             lhs_set = set(lhs_tuples) - rhs_set
-            # print("lhs_set:", lhs_set, "rhs_set:", rhs_set)
 
             rhs_support = self.get_support(tuple(rhs_set))
             lhs_rhs_union_support = self.get_support(tuple(lhs_set.union(rhs_set)))
+            
+            _, _, rhs_support = self.items_index(tuple(rhs_set))
+            _, _, lhs_rhs_union_support = self.items_index(tuple(lhs_set.union(rhs_set)))
+
             if rhs_support > 0:
                 confidence = lhs_rhs_union_support / rhs_support
             else:
@@ -113,7 +116,6 @@ class APriori:
                 ignored += (tuple(rhs_set))
             
         ignored = set(ignored)
-        # print("ignored:", ignored)
         
 
         # 不重复搜搜过的规则
@@ -131,10 +133,6 @@ class APriori:
                 # 不熟悉 python ...😅, 因为 popleft 把元素拿出来了, 现在又要放回去 😅
                 que.append(head_dic)
                 break
-            # print(lhs_tuples, rhs_tuples)
-            # print(len(lhs_tuples))
-            # antecedent_len = len(lhs_tuples) - 1
-            # consequent_len = len(rhs_tuples) + 1
 
             for items in itertools.combinations(lhs_tuples, 1):
                 rhs = rhs_tuples + items
@@ -161,21 +159,7 @@ class APriori:
             rhs_tuples = list(head_dic.values())[0]
             res.append({tuple(lhs_tuples): tuple(rhs_tuples)})
         
-        return res
-
-                
-    def get_support(self, itemsets: tuple):
-
-        item_list = list(itemsets)
-        item = item_list.pop()
-        index = self.item2line_index[item]
-        while item_list:
-            item = item_list.pop()
-            index = index.intersection(self.item2line_index[item])
-        support = len(index) / self.total_line
-        
-        return support
-
+        return res        
 
     def run(self):
 
@@ -197,7 +181,8 @@ class APriori:
             found_itemsets = dict()
 
             for candidate in c_k:
-                over_min_support, indices = self.items_index(candidate)
+                # print("candidate:", candidate)
+                over_min_support, indices, _ = self.items_index(candidate)
                 if over_min_support:
                     found_itemsets[candidate] = len(indices)
             large_itemsets[k] = {i: counts for (i, counts) in found_itemsets.items()}
@@ -219,8 +204,6 @@ if __name__ == '__main__':
                 continue
             else:
                 print("rules:", rules)
-    
-    # print(list(res[3].keys()))
 
 """
 1 3 4 6
