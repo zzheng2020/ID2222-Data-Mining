@@ -80,5 +80,5 @@ def gen_possible_itemset(items: List[tuple]):
 
 
 if __name__ == '__main__':
-    test = [('1',), ('2',), ('3',), ('4',), ('5',), ('6',)]
-    print(gen_possible_itemset(test))
+    test = [(1, 3), (2, 3), (2, 4), (2, 5), (3, 5)]
+    print(join_step(test))
