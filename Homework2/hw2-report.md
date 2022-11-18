@@ -4,7 +4,7 @@
 
 
 
-## First Sub-problem: Find Frequent Itemsets With Support At Least $S$
+## Functions
 
 * `join_step` function
 
@@ -43,3 +43,17 @@
   3. `item_index`
 
      It is used to check whether the itemset meets the `min_support` requirement.
+
+  4. `run`
+
+     It is used to calculate frequent itemsets.
+
+  5. `gen_rules`
+
+     After `run`, Use BFS to generate rules. see follwing fig.
+
+     ![conf_pruned](/Users/zihengzhang/KTH/ID2222-FID3016-HT22-Data-Mining/ID2222-Data-Mining/Homework2/pic/conf_pruned.png)
+
+  ## Results
+
+  ![result](/Users/zihengzhang/KTH/ID2222-FID3016-HT22-Data-Mining/ID2222-Data-Mining/Homework2/pic/result.png)
