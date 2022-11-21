@@ -92,6 +92,8 @@ class APriori:
         """
         que = collections.deque()
 
+        all_rules = collections.deque()
+
         lhs_tuples = frequent_items
 
         ignored = tuple()
@@ -110,12 +112,12 @@ class APriori:
 
             if confidence >= self.min_confidence:
                 que.append({tuple(lhs_set): tuple(rhs_set)})
+                all_rules.append({tuple(lhs_set): tuple(rhs_set)})
             else:
                 ignored += (tuple(rhs_set))
             
         ignored = set(ignored)
         
-
         # 不重复搜搜过的规则
         has_appeared = collections.defaultdict(int)
         while len(que) > 0:
@@ -153,16 +155,22 @@ class APriori:
 
                 if confidence >= self.min_confidence:
                     que.append({tuple(lhs_set): tuple(rhs_set)})
+                    all_rules.append({tuple(lhs_set): tuple(rhs_set)})
             
             # print("---")
         
         res = []
-        while len(que) > 0:
-            head_dic = que.popleft()
+        # while len(que) > 0:
+        #     head_dic = que.popleft()
+        #     lhs_tuples = list(head_dic.keys())[0]
+        #     rhs_tuples = list(head_dic.values())[0]
+        #     res.append({tuple(lhs_tuples): tuple(rhs_tuples)})
+        
+        while len(all_rules) > 0:
+            head_dic = all_rules.popleft()
             lhs_tuples = list(head_dic.keys())[0]
             rhs_tuples = list(head_dic.values())[0]
             res.append({tuple(lhs_tuples): tuple(rhs_tuples)})
-        
         return res        
 
     def run(self):
