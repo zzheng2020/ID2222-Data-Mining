@@ -35,7 +35,8 @@ class APriori:
 
     def items_index(self, itemset):
         itemset = sorted(itemset, key=lambda item: len(self.item2line_index[item]), reverse=True)
-
+        if len(itemset) == 0:
+            return False, None, 0
         item = itemset.pop()
         index = self.item2line_index[item]
         support = len(index) / self.total_line
@@ -91,6 +92,8 @@ class APriori:
         """
         que = collections.deque()
 
+        all_rules = collections.deque()
+
         lhs_tuples = frequent_items
 
         ignored = tuple()
@@ -99,22 +102,22 @@ class APriori:
             rhs_set = set(items)
             lhs_set = set(lhs_tuples) - rhs_set
             
-            _, _, rhs_support = self.items_index(tuple(rhs_set))
+            _, _, lhs_support = self.items_index(tuple(lhs_set))
             _, _, lhs_rhs_union_support = self.items_index(tuple(lhs_set.union(rhs_set)))
 
-            if rhs_support > 0:
-                confidence = lhs_rhs_union_support / rhs_support
+            if lhs_support > 0:
+                confidence = lhs_rhs_union_support / lhs_support
             else:
                 confidence = 0
 
             if confidence >= self.min_confidence:
                 que.append({tuple(lhs_set): tuple(rhs_set)})
+                all_rules.append({tuple(lhs_set): tuple(rhs_set)})
             else:
                 ignored += (tuple(rhs_set))
             
         ignored = set(ignored)
         
-
         # 不重复搜搜过的规则
         has_appeared = collections.defaultdict(int)
         while len(que) > 0:
@@ -145,17 +148,29 @@ class APriori:
 
                 lhs_set = set(lhs_tuples) - set(items)
 
-                que.append({tuple(lhs_set): tuple(rhs_set)})
+                _, _, lhs_support = self.items_index(tuple(lhs_set))
+                _, _, lhs_rhs_union_support = self.items_index(tuple(lhs_set.union(rhs_set)))
+
+                confidence = lhs_rhs_union_support / lhs_support
+
+                if confidence >= self.min_confidence:
+                    que.append({tuple(lhs_set): tuple(rhs_set)})
+                    all_rules.append({tuple(lhs_set): tuple(rhs_set)})
             
             # print("---")
         
         res = []
-        while len(que) > 0:
-            head_dic = que.popleft()
+        # while len(que) > 0:
+        #     head_dic = que.popleft()
+        #     lhs_tuples = list(head_dic.keys())[0]
+        #     rhs_tuples = list(head_dic.values())[0]
+        #     res.append({tuple(lhs_tuples): tuple(rhs_tuples)})
+        
+        while len(all_rules) > 0:
+            head_dic = all_rules.popleft()
             lhs_tuples = list(head_dic.keys())[0]
             rhs_tuples = list(head_dic.values())[0]
             res.append({tuple(lhs_tuples): tuple(rhs_tuples)})
-        
         return res        
 
     def run(self):
