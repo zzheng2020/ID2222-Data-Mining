@@ -58,7 +58,7 @@ if __name__ == "__main__":
             stat[(frm, 1)] = 0
         if to != last:
             if last is not None:
-                stat[(last, 0)] = 1
+                stat[(last, 0)] = 0
                 stat[(last, 1)] = cnt
             last = to
             cnt = 1
@@ -67,7 +67,7 @@ if __name__ == "__main__":
         prob_card_counter[to].add(frm)
 
     if last is not None:
-        stat[(last, 0)] = 1
+        stat[(last, 0)] = 0
         stat[(last, 1)] = cnt
 
     checkpoint(stat, 0)
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     # print("node num: ", node_num)
     for i in range(1, round + 1):
         for node in prob_card_counter.keys():
-            harmonic_centrality[node] += stat[(node, round)] / round
+            harmonic_centrality[node] += (stat[(node, round)] - stat[(node, round - 1)]) / round
 
     srtd_centrality = sorted(list(map(lambda x: (x[1], x[0]), harmonic_centrality.items())), reverse=True)
 
