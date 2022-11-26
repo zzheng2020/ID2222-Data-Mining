@@ -103,7 +103,7 @@ if __name__ == "__main__":
         checkpoint(stat, round)
 
         # if not changed:
-        if not changed or round > 10:
+        if not changed or round > 15:
             break
 
         round += 1
