@@ -28,9 +28,8 @@ class HyperLogLogCounter:
     def add(self, data):
         h = hash(data)
         # get the first b bits
-        # 从右向左的 b 位
         j = h & (self.m - 1)
-        # get the remaining bits
+        # get the remaining 32 - b bits
         w = h >> self.m
         # count the number of trailing 0s
         self.M[j] = max(self.M[j], Utils.rho(w) - self.m + 1)
@@ -43,8 +42,6 @@ class HyperLogLogCounter:
         # print(self.M)
         # print(self.m / sum(2 ** -m for m in self.M))
         E = self.alpha * self.m ** 2 / sum(2 ** -m for m in self.M)
-
-        # HyperLogLog paper
         if E <= 5 / 2 * self.m:
             V = self.m - self.M.count(0)
             if V != 0:
@@ -129,11 +126,9 @@ class Utils:
 
 if __name__ == "__main__":
     # fmp = FMCounter2()
-    counter = FMCounter2()
-    # counter = HyperLogLogCounter()
+    counter = HyperLogLogCounter()
 
-    data = "/Users/zihengzhang/KTH/ID2222-FID3016-HT22-Data-Mining/web-Google.txt"
-    with open(data, "r") as f:
+    with open("web-Google.txt", "r") as f:
         while True:
             line = f.readline()
             if len(line) == 0:

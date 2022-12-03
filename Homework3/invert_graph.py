@@ -2,8 +2,7 @@ from centrality import DatasetIterator
 from typing import Dict, Tuple, List
 import os
 
-data = "/Users/zihengzhang/KTH/ID2222-FID3016-HT22-Data-Mining/web-Google.txt"
-dataIt = DatasetIterator(data)
+dataIt = DatasetIterator("web-Google.txt")
 inverted_graph:Dict[int, List[int]] = dict()
 
 maxx = 0
