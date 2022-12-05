@@ -3,3 +3,10 @@ local_test*
 .DS_Store
 .idea
 *.txt
+graphs
+
+.idea
+/target
+.iml
+/output
+graph.png
