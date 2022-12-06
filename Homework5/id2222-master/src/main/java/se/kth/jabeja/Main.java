@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 
-
 public class Main {
     final static Logger logger = Logger.getLogger(Main.class);
 
@@ -28,15 +27,15 @@ public class Main {
     private void startApp(String[] args) throws IOException {
         config = (new CLI()).parseArgs(args);
 
-        //set seed for the application
-        //Note for the results to be deterministic use
-        //only one random generator.
+        // set seed for the application
+        // Note for the results to be deterministic use
+        // only one random generator.
         RandNoGenerator.setSeed(config.getSeed());
 
-        //read the input graph
+        // read the input graph
         HashMap<Integer, Node> graph = readGraph();
 
-        //start JaBeJa
+        // start JaBeJa
         startJabeja(graph);
     }
 
@@ -47,7 +46,8 @@ public class Main {
      */
     private HashMap<Integer, Node> readGraph() {
         GraphReader graphReader = new GraphReader();
-        graph = graphReader.readGraph(config.getGraphFilePath(), config.getGraphInitialColorPolicy(), config.getNumPartitions());
+        graph = graphReader.readGraph(config.getGraphFilePath(), config.getGraphInitialColorPolicy(),
+                config.getNumPartitions());
         return graph;
     }
 
