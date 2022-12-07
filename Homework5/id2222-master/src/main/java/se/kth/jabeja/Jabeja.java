@@ -131,9 +131,13 @@ public class Jabeja {
 
             double accP = Math.exp((nnew - old) / T);
 
-            if (accP > highestBenefit && nnew != old && accP > random.nextDouble()) {
+            if (nnew < old && accP > random.nextDouble()) {
                 bestPartner = nodeq;
-                highestBenefit = accP;
+                highestBenefit = nnew;
+            }
+            else if (nnew > old && nnew > highestBenefit) {
+                bestPartner = nodeq;
+                highestBenefit = nnew;
             }
         }
 
