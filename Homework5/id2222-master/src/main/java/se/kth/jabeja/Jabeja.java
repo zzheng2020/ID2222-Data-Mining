@@ -49,10 +49,17 @@ public class Jabeja {
      */
     private void saCoolDown() {
         // TODO for second task
+
+
         if (T > 1)
             T -= config.getDelta();
         if (T < 1)
             T = 1;
+
+        // double eps = 0.00001;
+        // while (T > eps) {
+        //     T *= config.getDelta();
+        // }
     }
 
     /**
