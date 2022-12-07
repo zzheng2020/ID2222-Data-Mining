@@ -20,6 +20,8 @@ public class Jabeja {
     private float T;
     private boolean resultFileCreated = false;
 
+    private Random random = new Random();
+
     // -------------------------------------------------------------------
     public Jabeja(HashMap<Integer, Node> graph, Config config) {
         this.entireGraph = graph;
@@ -51,15 +53,15 @@ public class Jabeja {
         // TODO for second task
 
 
-        if (T > 1)
-            T -= config.getDelta();
-        if (T < 1)
-            T = 1;
+        // if (T > 1)
+        //     T -= config.getDelta();
+        // if (T < 1)
+        //     T = 1;
 
-        // double eps = 0.00001;
-        // while (T > eps) {
-        //     T *= config.getDelta();
-        // }
+        double eps = 0.00001;
+        while (T > eps) {
+            T *= config.getDelta();
+        }
     }
 
     /**
@@ -122,9 +124,16 @@ public class Jabeja {
 
             double nnew = Math.pow(dpq, config.getAlpha()) + Math.pow(dqp, config.getAlpha());
 
-            if (nnew * T > old && nnew > highestBenefit) {
+            // if (nnew * T > old && nnew > highestBenefit) {
+            //     bestPartner = nodeq;
+            //     highestBenefit = nnew;
+            // }
+
+            double accP = Math.exp((nnew - old) / T);
+
+            if (accP > highestBenefit && nnew != old && accP > random.nextDouble()) {
                 bestPartner = nodeq;
-                highestBenefit = nnew;
+                highestBenefit = accP;
             }
         }
 
