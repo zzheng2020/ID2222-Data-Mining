@@ -292,6 +292,8 @@ public class Jabeja {
 
         currentEdgeCut = edgeCut;
 
+        edgeCut = Math.min(edgeCut, bestResult);
+
 
         logger.info("round: " + round +
                 ", edge cut:" + edgeCut +
