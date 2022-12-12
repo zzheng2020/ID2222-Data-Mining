@@ -20,7 +20,16 @@ public class Jabeja {
     private float T;
     private boolean resultFileCreated = false;
 
+    private int currentEdgeCut = 0;
+    private int previousEdgeCut = 0;
+
+    private int edgeCutNOTChange = 0;
+
+    private int bestResult = 1000000;
+
     private Random random = new Random();
+    
+    final static int restartThreshold = 10;
 
     // -------------------------------------------------------------------
     public Jabeja(HashMap<Integer, Node> graph, Config config) {
@@ -43,7 +52,31 @@ public class Jabeja {
             // reduce the temperature
             saCoolDown();
             report();
+            if (round > 500) {
+                restart();
+            }
+            bestResult = Math.min(bestResult, currentEdgeCut);
         }
+    }
+
+    /**
+     * Restart
+     */
+    private void restart() {
+
+        if (currentEdgeCut == previousEdgeCut) {
+            edgeCutNOTChange ++;
+            if (edgeCutNOTChange == restartThreshold) {
+                T = config.getTemperature();
+                edgeCutNOTChange = 0;
+            }
+        }
+        else {
+            edgeCutNOTChange = 0;
+        }
+
+        previousEdgeCut = currentEdgeCut;
+
     }
 
     /**
@@ -257,10 +290,14 @@ public class Jabeja {
 
         int edgeCut = grayLinks / 2;
 
+        currentEdgeCut = edgeCut;
+
+
         logger.info("round: " + round +
                 ", edge cut:" + edgeCut +
                 ", swaps: " + numberOfSwaps +
-                ", migrations: " + migrations);
+                ", migrations: " + migrations +
+                ", best result: " + bestResult);
 
         saveToFile(edgeCut, migrations);
     }
