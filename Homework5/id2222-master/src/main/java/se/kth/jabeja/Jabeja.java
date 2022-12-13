@@ -28,8 +28,10 @@ public class Jabeja {
     private int bestResult = 1000000;
 
     private Random random = new Random();
+
+    private float delta = 0.0f;
     
-    final static int restartThreshold = 10;
+    final static int restartThreshold = 100;
 
     // -------------------------------------------------------------------
     public Jabeja(HashMap<Integer, Node> graph, Config config) {
@@ -39,6 +41,8 @@ public class Jabeja {
         this.numberOfSwaps = 0;
         this.config = config;
         this.T = config.getTemperature();
+        
+        this.delta = config.getDelta();
     }
 
     // -------------------------------------------------------------------
@@ -52,10 +56,8 @@ public class Jabeja {
             // reduce the temperature
             saCoolDown();
             report();
-            if (round > 500) {
-                restart();
-            }
-            bestResult = Math.min(bestResult, currentEdgeCut);
+            restart();
+            // bestResult = Math.min(bestResult, currentEdgeCut);
         }
     }
 
@@ -68,6 +70,7 @@ public class Jabeja {
             edgeCutNOTChange ++;
             if (edgeCutNOTChange == restartThreshold) {
                 T = config.getTemperature();
+                delta = delta / 1.25f;
                 edgeCutNOTChange = 0;
             }
         }
@@ -92,8 +95,8 @@ public class Jabeja {
         //     T = 1;
 
         double eps = 0.00001;
-        while (T > eps) {
-            T *= config.getDelta();
+        if (T > eps) {
+            T *= delta;
         }
     }
 
@@ -292,7 +295,7 @@ public class Jabeja {
 
         currentEdgeCut = edgeCut;
 
-        edgeCut = Math.min(edgeCut, bestResult);
+        // edgeCut = Math.min(edgeCut, bestResult);
 
 
         logger.info("round: " + round +
